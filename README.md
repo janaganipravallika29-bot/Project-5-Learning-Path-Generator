@@ -42,22 +42,22 @@ Ensure Python is installed on your machine:
 python --version
 ```
 
-### 2. Install Dependencies
-```bash
-python -m pip install flask python-dotenv requests
-```
+### Option A: Python Flask Backend (Recommended)
+1. Install dependencies:
+   ```bash
+   python -m pip install flask python-dotenv requests
+   ```
+2. Start the server:
+   ```bash
+   python app.py
+   ```
+3. Open in browser: `http://127.0.0.1:5000/`
 
-### 3. Start the Server
-Launch the application:
-```bash
-python app.py
-```
+### Option B: VS Code Live Server (Static Mode)
+1. Right-click `index.html` (or `templates/index.html`) in VS Code.
+2. Click **Open with Live Server** (`http://127.0.0.1:5500/`).
+3. The application features built-in CORS resolution and a client-side roadmap fallback engine that works 100% out-of-the-box in static mode!
 
-### 4. Open in Browser
-Navigate to:
-```
-http://127.0.0.1:5000/
-```
 
 ---
 

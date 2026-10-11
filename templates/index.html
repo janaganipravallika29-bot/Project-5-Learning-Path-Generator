@@ -5,10 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AI Learning Path Generator — Colorful, modern, and personalized learning roadmaps tailored to your career goals, current skills, and schedule.">
   <title>AI Learning Path Generator — Professional AI Career Roadmaps</title>
+  
+  <!-- Defensive Inline Guard: Prevents unstyled SVG blowups in all browsers/live servers -->
+  <style>
+    svg { max-width: 100%; }
+    .brand-logo-icon svg { width: 24px !important; height: 24px !important; }
+    .input-icon { width: 20px !important; height: 20px !important; }
+    .nav-tab-btn svg, .btn svg { width: 16px !important; height: 16px !important; }
+    .feature-icon-wrapper svg { width: 22px !important; height: 22px !important; }
+  </style>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  
+  <!-- Universal CSS paths: Works in Live Server (Port 5500), Direct File Opening, and Flask Server (Port 5000) -->
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="./static/css/style.css">
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body class="app-dark-theme">
   <!-- Ambient Animated Background Lights -->
@@ -248,9 +262,14 @@
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                 <select id="career_goal" name="career_goal" class="form-select" required>
                   <option value="" disabled selected>Select your target role</option>
-                  {% for goal in career_goals %}
-                    <option value="{{ goal }}">{{ goal }}</option>
-                  {% endfor %}
+                  <option value="Data Analyst">Data Analyst</option>
+                  <option value="Software Developer">Software Developer</option>
+                  <option value="Web Developer">Web Developer</option>
+                  <option value="Data Scientist">Data Scientist</option>
+                  <option value="AI/ML Engineer">AI/ML Engineer</option>
+                  <option value="Cybersecurity Analyst">Cybersecurity Analyst</option>
+                  <option value="Cloud Engineer">Cloud Engineer</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
               <span class="field-error" id="career_goal-error"></span>
@@ -281,9 +300,10 @@
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20"></path><path d="M5 20V14"></path><path d="M12 20V8"></path><path d="M19 20V2"></path></svg>
                 <select id="experience_level" name="experience_level" class="form-select" required>
                   <option value="" disabled selected>Select your current level</option>
-                  {% for level in experience_levels %}
-                    <option value="{{ level }}">{{ level }}</option>
-                  {% endfor %}
+                  <option value="Complete Beginner">Complete Beginner</option>
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
                 </select>
               </div>
               <span class="field-error" id="experience_level-error"></span>
@@ -356,9 +376,11 @@
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 <select id="study_time" name="study_time" class="form-select" required>
                   <option value="" disabled selected>Select daily hours</option>
-                  {% for time in study_times %}
-                    <option value="{{ time }}">{{ time }} per day</option>
-                  {% endfor %}
+                  <option value="30 minutes">30 minutes per day</option>
+                  <option value="1 hour">1 hour per day</option>
+                  <option value="2 hours">2 hours per day</option>
+                  <option value="3 hours">3 hours per day</option>
+                  <option value="4 or more hours">4 or more hours per day</option>
                 </select>
               </div>
               <span class="field-error" id="study_time-error"></span>
@@ -374,9 +396,11 @@
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 <select id="learning_duration" name="learning_duration" class="form-select" required>
                   <option value="" disabled selected>Select target duration</option>
-                  {% for duration in durations %}
-                    <option value="{{ duration }}">{{ duration }}</option>
-                  {% endfor %}
+                  <option value="2 weeks">2 weeks</option>
+                  <option value="1 month">1 month</option>
+                  <option value="2 months">2 months</option>
+                  <option value="3 months">3 months</option>
+                  <option value="6 months">6 months</option>
                 </select>
               </div>
               <span class="field-error" id="learning_duration-error"></span>
@@ -392,9 +416,12 @@
                 <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 <select id="preferred_learning_method" name="preferred_learning_method" class="form-select">
                   <option value="" selected>Select preferred style (optional)</option>
-                  {% for method in preferred_methods %}
-                    <option value="{{ method }}">{{ method }}</option>
-                  {% endfor %}
+                  <option value="Video tutorials">Video tutorials</option>
+                  <option value="Reading documentation">Reading documentation</option>
+                  <option value="Hands-on coding">Hands-on coding</option>
+                  <option value="Practice exercises">Practice exercises</option>
+                  <option value="Projects">Projects</option>
+                  <option value="Mixed learning">Mixed learning</option>
                 </select>
               </div>
               <span class="field-error" id="preferred_learning_method-error"></span>
@@ -647,6 +674,9 @@
     </div>
   </footer>
 
-  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <!-- Universal Script Loading -->
+  <script src="../static/js/app.js"></script>
+  <script src="./static/js/app.js"></script>
+  <script src="/static/js/app.js"></script>
 </body>
 </html>

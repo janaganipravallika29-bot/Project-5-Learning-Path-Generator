@@ -5,16 +5,25 @@ Comprehensive enterprise-grade backend supporting:
 - Phase 3: MCP Tool Integration & Service Diagnostics
 - Phase 4 & 5: AI Personalized Roadmap Generation & Display
 - Phase 6: Progress Tracking & Dashboard State
+- CORS Support for Live Server (Port 5500) and Multi-Port Environments
 """
 
 import os
 import json
 import math
 from datetime import datetime
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "mcp-mega-workshop-secret-key-98231")
+
+# Enable CORS for local cross-origin tools like VS Code Live Server
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+    return response
 
 # Reference Options adhering to PRD & DESIGN specifications
 CAREER_GOALS = [
@@ -100,14 +109,9 @@ def build_curriculum_blueprint(career_goal: str, skills_to_learn: list[str], exp
     skills, experience level, and timeline.
     """
     total_hours = int(weeks_count * 7 * daily_hours)
-    
-    # Skill gap identification
     skills_str = ", ".join(skills_to_learn) if skills_to_learn else "Foundational Technologies"
-    
-    # Generate weekly modules dynamically based on weeks_count
     modules = []
-    
-    # Curriculum milestones template based on duration
+
     for week_num in range(1, weeks_count + 1):
         progress_pct = int((week_num / weeks_count) * 100)
         
@@ -182,7 +186,6 @@ def build_curriculum_blueprint(career_goal: str, skills_to_learn: list[str], exp
         }
         modules.append(module)
 
-    # Study routine distribution
     if daily_hours <= 1.0:
         study_routine = [
             {"time_split": "15 mins", "activity": "Theory & Conceptual Reading"},
@@ -239,9 +242,11 @@ def index():
     )
 
 
-@app.route("/api/health", methods=["GET"])
+@app.route("/api/health", methods=["GET", "OPTIONS"])
 def health_check():
     """System health & diagnostics endpoint for MCP Mega Workshop."""
+    if request.method == "OPTIONS":
+        return "", 200
     return jsonify({
         "status": "online",
         "service": "AI Learning Path Generator",
@@ -262,23 +267,24 @@ def health_check():
     })
 
 
-@app.route("/api/validate", methods=["POST"])
+@app.route("/api/validate", methods=["POST", "OPTIONS"])
 def validate_and_process():
     """
     Validates form data and returns normalized structured profile.
     Strictly enforces PRD.md Section 6 & 8 rules.
     """
+    if request.method == "OPTIONS":
+        return "", 200
+
     data = request.get_json(silent=True) or request.form.to_dict()
     errors = {}
 
-    # 1. Full Name validation
     full_name = (data.get("full_name") or "").strip()
     if not full_name:
         errors["full_name"] = "Full name is required and cannot be blank."
     elif len(full_name) < 2:
         errors["full_name"] = "Full name must be at least 2 characters."
 
-    # 2. Career Goal validation
     career_goal = (data.get("career_goal") or "").strip()
     custom_career_goal = (data.get("custom_career_goal") or "").strip()
 
@@ -292,14 +298,12 @@ def validate_and_process():
         else:
             career_goal = custom_career_goal
 
-    # 3. Experience Level validation
     experience_level = (data.get("experience_level") or "").strip()
     if not experience_level:
         errors["experience_level"] = "Please select your experience level."
     elif experience_level not in EXPERIENCE_LEVELS:
         errors["experience_level"] = "Invalid experience level selected."
 
-    # 4. Current Skills validation
     current_skills_raw = (data.get("current_skills") or "").strip()
     if not current_skills_raw:
         errors["current_skills"] = "Please specify your current skills."
@@ -307,7 +311,6 @@ def validate_and_process():
     if current_skills_raw and not current_skills:
         errors["current_skills"] = "Please enter at least one valid current skill."
 
-    # 5. Skills to Learn validation
     skills_to_learn_raw = (data.get("skills_to_learn") or "").strip()
     if not skills_to_learn_raw:
         errors["skills_to_learn"] = "Please specify the skills you want to learn."
@@ -315,21 +318,18 @@ def validate_and_process():
     if skills_to_learn_raw and not skills_to_learn:
         errors["skills_to_learn"] = "Please enter at least one valid skill to learn."
 
-    # 6. Daily Study Time validation
     study_time = (data.get("study_time") or "").strip()
     if not study_time:
         errors["study_time"] = "Please select your daily available study time."
     elif study_time not in STUDY_TIME_OPTIONS:
         errors["study_time"] = "Invalid study time selected."
 
-    # 7. Learning Duration validation
     learning_duration = (data.get("learning_duration") or "").strip()
     if not learning_duration:
         errors["learning_duration"] = "Please select your desired learning duration."
     elif learning_duration not in LEARNING_DURATION_OPTIONS:
         errors["learning_duration"] = "Invalid learning duration selected."
 
-    # 8. Preferred Learning Method (Optional)
     preferred_learning_method = (data.get("preferred_learning_method") or "").strip()
     if preferred_learning_method and preferred_learning_method not in PREFERRED_METHODS:
         errors["preferred_learning_method"] = "Invalid preferred learning method selected."
@@ -359,29 +359,29 @@ def validate_and_process():
     }), 200
 
 
-@app.route("/api/generate-roadmap", methods=["POST"])
+@app.route("/api/generate-roadmap", methods=["POST", "OPTIONS"])
 def generate_roadmap():
     """
     Phase 4: Generates a complete, tailored learning path roadmap
     from the validated user profile.
     """
+    if request.method == "OPTIONS":
+        return "", 200
+
     data = request.get_json(silent=True) or request.form.to_dict()
     
-    # First, validate profile
     val_resp, status_code = validate_and_process()
     if status_code != 200:
         return val_resp, status_code
 
     profile = val_resp.json["profile"]
     
-    # Calculate parameters
     duration_str = profile["learning_duration"]
     weeks_count = DURATION_WEEKS_MAP.get(duration_str, 8)
     
     study_time_clean = profile["study_time"].replace(" per day", "")
     daily_hours = DAILY_HOURS_MAP.get(study_time_clean, 2.0)
     
-    # Synthesize roadmap
     roadmap_data = build_curriculum_blueprint(
         career_goal=profile["career_goal"],
         skills_to_learn=profile["skills_to_learn"],

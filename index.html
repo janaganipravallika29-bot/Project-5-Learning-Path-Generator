@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI Learning Path Generator — Colorful, modern, and personalized learning roadmaps tailored to your career goals, current skills, and schedule.">
+  <title>AI Learning Path Generator — Professional AI Career Roadmaps</title>
+  
+  <!-- Defensive Inline Guard: Prevents unstyled SVG blowups in all browsers/live servers -->
+  <style>
+    svg { max-width: 100%; }
+    .brand-logo-icon svg { width: 24px !important; height: 24px !important; }
+    .input-icon { width: 20px !important; height: 20px !important; }
+    .nav-tab-btn svg, .btn svg { width: 16px !important; height: 16px !important; }
+    .feature-icon-wrapper svg { width: 22px !important; height: 22px !important; }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Universal CSS paths: Works in Live Server (Port 5500), Direct File Opening, and Flask Server (Port 5000) -->
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="./static/css/style.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="app-dark-theme">
+  <!-- Ambient Animated Background Lights -->
+  <div class="ambient-glow-wrapper" aria-hidden="true">
+    <div class="ambient-orb orb-purple"></div>
+    <div class="ambient-orb orb-cyan"></div>
+    <div class="ambient-orb orb-blue"></div>
+  </div>
+
+  <!-- Top Glassmorphism Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Path<span class="gradient-text">Forge AI</span></span>
+          <span class="brand-tag">MCP Mega Workshop • Project 5</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist">
+        <button type="button" class="nav-tab-btn active" data-tab="tab-form" id="btn-tab-form">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          Build Roadmap
+        </button>
+        <button type="button" class="nav-tab-btn" data-tab="tab-roadmap" id="btn-tab-roadmap" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Learning Roadmap
+          <span class="tab-badge" id="roadmap-badge" style="display:none;">Ready</span>
+        </button>
+        <button type="button" class="nav-tab-btn" data-tab="tab-dashboard" id="btn-tab-dashboard" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+          Progress Dashboard
+        </button>
+      </nav>
+
+      <!-- Action Presets & MCP Status -->
+      <div class="nav-actions">
+        <div class="dropdown">
+          <button type="button" class="btn btn-preset-dropdown" id="preset-dropdown-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            Quick Presets ▾
+          </button>
+          <div class="dropdown-menu" id="preset-menu">
+            <button type="button" class="dropdown-item" data-preset="data-analyst">
+              <span class="item-icon-tag bg-cyan">📊</span>
+              <div>
+                <strong>Data Analyst</strong>
+                <small>Python, SQL → Pandas, Power BI, Statistics</small>
+              </div>
+            </button>
+            <button type="button" class="dropdown-item" data-preset="software-developer">
+              <span class="item-icon-tag bg-blue">💻</span>
+              <div>
+                <strong>Software Developer</strong>
+                <small>HTML, CSS, JS → React, Node.js, PostgreSQL</small>
+              </div>
+            </button>
+            <button type="button" class="dropdown-item" data-preset="ai-engineer">
+              <span class="item-icon-tag bg-purple">🧠</span>
+              <div>
+                <strong>AI/ML Engineer</strong>
+                <small>Python, Math → PyTorch, Deep Learning, MLOps</small>
+              </div>
+            </button>
+            <button type="button" class="dropdown-item" data-preset="cybersecurity">
+              <span class="item-icon-tag bg-emerald">🛡️</span>
+              <div>
+                <strong>Cybersecurity Analyst</strong>
+                <small>Networking → Wireshark, SIEM, Ethical Hacking</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="status-indicator-btn" id="mcp-diagnostics-btn" title="Inspect MCP Protocol & Tools">
+          <span class="status-dot"></span>
+          <span class="status-text">MCP Live</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-body-container">
+    
+    <!-- ======================================================= -->
+    <!-- TAB 1: LANDING HERO + USER INPUT PROFILE (PHASES 1 & 2) -->
+    <!-- ======================================================= -->
+    <section id="tab-form" class="tab-content active">
+      
+      <!-- Colorful Landing Hero Section -->
+      <div class="hero-landing">
+        <div class="hero-badge-pill">
+          <span class="badge-sparkle">✨</span>
+          <span>Next-Gen AI Learning Path Generator</span>
+          <span class="badge-status-chip">MCP v1.0 Verified</span>
+        </div>
+
+        <h1 class="hero-main-title">
+          Master Any Tech Career With A <span class="gradient-text-vibrant">Personalized AI Roadmap</span>
+        </h1>
+        
+        <p class="hero-description">
+          Bridge your skill gaps with a custom-engineered study roadmap. We analyze what you already know, prioritize what you need to learn, and structure your exact timeline with hands-on practice.
+        </p>
+
+        <!-- Hero CTAs -->
+        <div class="hero-cta-group">
+          <a href="#form-section-anchor" class="btn btn-hero-primary" id="btn-hero-get-started">
+            <span>🚀 Get Started — Build My Path</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <button type="button" class="btn btn-hero-secondary" id="btn-hero-load-demo">
+            <span>⚡ Load Instant Demo</span>
+          </button>
+        </div>
+
+        <!-- 4 Vibrant Value Pillar Cards -->
+        <div class="hero-features-grid">
+          <div class="feature-card border-glow-cyan">
+            <div class="feature-icon-wrapper bg-gradient-cyan">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h3>Skill Gap Synthesis</h3>
+            <p>Automatically isolates current skills against market requirements for your target career.</p>
+          </div>
+
+          <div class="feature-card border-glow-purple">
+            <div class="feature-icon-wrapper bg-gradient-purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <h3>Milestone Scaffolding</h3>
+            <p>Progressive week-by-week curriculum with objectives, code drills, and weekly mini-projects.</p>
+          </div>
+
+          <div class="feature-card border-glow-blue">
+            <div class="feature-icon-wrapper bg-gradient-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            </div>
+            <h3>MCP Tool Verified</h3>
+            <p>Standardized via Model Context Protocol tools for reproducible AI curriculum delivery.</p>
+          </div>
+
+          <div class="feature-card border-glow-pink">
+            <div class="feature-icon-wrapper bg-gradient-pink">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <h3>Habit &amp; Task Tracker</h3>
+            <p>Interactive task checklist and completion stats saved continuously in local storage.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anchor for Smooth Scroll -->
+      <div id="form-section-anchor"></div>
+
+      <!-- Form Card Container with Colorful Glowing Accents -->
+      <div class="form-card-glass">
+        <div class="form-card-header">
+          <div class="header-titles">
+            <div class="section-tag-pill">Step 1 &amp; 2 • Student Profile Setup</div>
+            <h2 class="card-heading">Tell Us About Your Learning Goals</h2>
+            <p class="card-note">Every field marked with <span class="required-star">*</span> is required for strict curriculum validation.</p>
+          </div>
+          
+          <!-- Dynamic Time & Hours Calculation Widget -->
+          <div class="live-study-widget" id="study-estimate-badge">
+            <div class="widget-icon">⚡</div>
+            <div class="widget-text">
+              <span class="widget-title">Dynamic Calculation</span>
+              <span class="widget-val" id="study-estimate-text">~112 hours total (8 weeks @ 2h/day)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Validation Alert Banners -->
+        <div id="error-summary" class="alert alert-error" style="display: none;" role="alert">
+          <div class="alert-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </div>
+          <div class="alert-content">
+            <strong>Please correct the following fields before submitting:</strong>
+            <ul id="error-list"></ul>
+          </div>
+        </div>
+
+        <div id="success-banner" class="alert alert-success" style="display: none;" role="status">
+          <div class="alert-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <div class="alert-content">
+            <strong id="success-title">Profile Successfully Validated!</strong>
+            <p id="success-message-text">Your learning roadmap has been generated. Redirecting to your interactive roadmap...</p>
+          </div>
+        </div>
+
+        <!-- The 9-Field User Input Form -->
+        <form id="learning-path-form" novalidate>
+          <div class="form-grid">
+            
+            <!-- 1. Full Name -->
+            <div class="form-group col-span-2">
+              <label for="full_name" class="form-label">
+                <span>1. Full Name <span class="required-star">*</span></span>
+                <span class="label-hint">For personalized roadmap certificate</span>
+              </label>
+              <div class="input-glow-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <input 
+                  type="text" 
+                  id="full_name" 
+                  name="full_name" 
+                  class="form-input" 
+                  placeholder="Enter your full name (e.g. Alex Morgan)" 
+                  required
+                  autocomplete="name"
+                >
+              </div>
+              <span class="field-error" id="full_name-error"></span>
+            </div>
+
+            <!-- 2. Career Goal -->
+            <div class="form-group">
+              <label for="career_goal" class="form-label">
+                <span>2. Career Goal <span class="required-star">*</span></span>
+                <span class="label-hint">Primary target role</span>
+              </label>
+              <div class="input-glow-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <select id="career_goal" name="career_goal" class="form-select" required>
+                  <option value="" disabled selected>Select your target role</option>
+                  <option value="Data Analyst">Data Analyst</option>
+                  <option value="Software Developer">Software Developer</option>
+                  <option value="Web Developer">Web Developer</option>
+                  <option value="Data Scientist">Data Scientist</option>
+                  <option value="AI/ML Engineer">AI/ML Engineer</option>
+                  <option value="Cybersecurity Analyst">Cybersecurity Analyst</option>
+                  <option value="Cloud Engineer">Cloud Engineer</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <span class="field-error" id="career_goal-error"></span>
+
+              <!-- 3. Custom Career Goal (Conditional for "Other") -->
+              <div id="custom-goal-container" class="conditional-field-box">
+                <label for="custom_career_goal" class="form-label">
+                  <span>3. Custom Career Goal <span class="required-star">*</span></span>
+                </label>
+                <input 
+                  type="text" 
+                  id="custom_career_goal" 
+                  name="custom_career_goal" 
+                  class="form-input" 
+                  placeholder="e.g. Autonomous Vehicle AI Engineer, DevSecOps Lead"
+                >
+                <span class="field-error" id="custom_career_goal-error"></span>
+              </div>
+            </div>
+
+            <!-- 4. Experience Level -->
+            <div class="form-group">
+              <label for="experience_level" class="form-label">
+                <span>4. Experience Level <span class="required-star">*</span></span>
+                <span class="label-hint">Determines starting pace</span>
+              </label>
+              <div class="input-glow-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20"></path><path d="M5 20V14"></path><path d="M12 20V8"></path><path d="M19 20V2"></path></svg>
+                <select id="experience_level" name="experience_level" class="form-select" required>
+                  <option value="" disabled selected>Select your current level</option>
+                  <option value="Complete Beginner">Complete Beginner</option>
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                </select>
+              </div>
+              <span class="field-error" id="experience_level-error"></span>
+            </div>
+
+            <!-- 5. Current Skills -->
+            <div class="form-group col-span-2">
+              <label for="current_skills" class="form-label">
+                <span>5. Current Skills <span class="required-star">*</span></span>
+                <span class="label-hint">What you already know (comma or newline separated)</span>
+              </label>
+              <textarea 
+                id="current_skills" 
+                name="current_skills" 
+                class="form-textarea" 
+                placeholder="Example: Python basics, SQL, Git, HTML, CSS"
+                rows="3"
+                required
+              ></textarea>
+              <span class="field-error" id="current_skills-error"></span>
+              
+              <!-- Quick Skill Chips -->
+              <div class="skill-chips-bar">
+                <span class="chips-title">Quick add:</span>
+                <button type="button" class="skill-chip-pill chip-cyan" data-target="current_skills">+ Python</button>
+                <button type="button" class="skill-chip-pill chip-cyan" data-target="current_skills">+ SQL</button>
+                <button type="button" class="skill-chip-pill chip-cyan" data-target="current_skills">+ Git</button>
+                <button type="button" class="skill-chip-pill chip-cyan" data-target="current_skills">+ JavaScript</button>
+                <button type="button" class="skill-chip-pill chip-cyan" data-target="current_skills">+ Excel</button>
+                <button type="button" class="skill-chip-pill chip-cyan" data-target="current_skills">+ Linux</button>
+              </div>
+            </div>
+
+            <!-- 6. Skills to Learn -->
+            <div class="form-group col-span-2">
+              <label for="skills_to_learn" class="form-label">
+                <span>6. Skills to Learn <span class="required-star">*</span></span>
+                <span class="label-hint">Technologies you want synthesized into your plan</span>
+              </label>
+              <textarea 
+                id="skills_to_learn" 
+                name="skills_to_learn" 
+                class="form-textarea" 
+                placeholder="Example: Pandas, Machine Learning, Power BI, Statistics, Cloud Architecture, Docker"
+                rows="3"
+                required
+              ></textarea>
+              <span class="field-error" id="skills_to_learn-error"></span>
+
+              <!-- Quick Skill Chips -->
+              <div class="skill-chips-bar">
+                <span class="chips-title">Quick add:</span>
+                <button type="button" class="skill-chip-pill chip-purple" data-target="skills_to_learn">+ Pandas</button>
+                <button type="button" class="skill-chip-pill chip-purple" data-target="skills_to_learn">+ PyTorch</button>
+                <button type="button" class="skill-chip-pill chip-purple" data-target="skills_to_learn">+ React</button>
+                <button type="button" class="skill-chip-pill chip-purple" data-target="skills_to_learn">+ Docker</button>
+                <button type="button" class="skill-chip-pill chip-purple" data-target="skills_to_learn">+ AWS</button>
+                <button type="button" class="skill-chip-pill chip-purple" data-target="skills_to_learn">+ Power BI</button>
+                <button type="button" class="skill-chip-pill chip-purple" data-target="skills_to_learn">+ Node.js</button>
+              </div>
+            </div>
+
+            <!-- 7. Daily Study Time -->
+            <div class="form-group">
+              <label for="study_time" class="form-label">
+                <span>7. Daily Study Time <span class="required-star">*</span></span>
+                <span class="label-hint">Dedicated daily commitment</span>
+              </label>
+              <div class="input-glow-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <select id="study_time" name="study_time" class="form-select" required>
+                  <option value="" disabled selected>Select daily hours</option>
+                  <option value="30 minutes">30 minutes per day</option>
+                  <option value="1 hour">1 hour per day</option>
+                  <option value="2 hours">2 hours per day</option>
+                  <option value="3 hours">3 hours per day</option>
+                  <option value="4 or more hours">4 or more hours per day</option>
+                </select>
+              </div>
+              <span class="field-error" id="study_time-error"></span>
+            </div>
+
+            <!-- 8. Learning Duration -->
+            <div class="form-group">
+              <label for="learning_duration" class="form-label">
+                <span>8. Learning Duration <span class="required-star">*</span></span>
+                <span class="label-hint">Target completion timeframe</span>
+              </label>
+              <div class="input-glow-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <select id="learning_duration" name="learning_duration" class="form-select" required>
+                  <option value="" disabled selected>Select target duration</option>
+                  <option value="2 weeks">2 weeks</option>
+                  <option value="1 month">1 month</option>
+                  <option value="2 months">2 months</option>
+                  <option value="3 months">3 months</option>
+                  <option value="6 months">6 months</option>
+                </select>
+              </div>
+              <span class="field-error" id="learning_duration-error"></span>
+            </div>
+
+            <!-- 9. Preferred Learning Method (Optional) -->
+            <div class="form-group col-span-2">
+              <label for="preferred_learning_method" class="form-label">
+                <span>9. Preferred Learning Method</span>
+                <span class="label-hint">Optional pedagogy preference</span>
+              </label>
+              <div class="input-glow-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <select id="preferred_learning_method" name="preferred_learning_method" class="form-select">
+                  <option value="" selected>Select preferred style (optional)</option>
+                  <option value="Video tutorials">Video tutorials</option>
+                  <option value="Reading documentation">Reading documentation</option>
+                  <option value="Hands-on coding">Hands-on coding</option>
+                  <option value="Practice exercises">Practice exercises</option>
+                  <option value="Projects">Projects</option>
+                  <option value="Mixed learning">Mixed learning</option>
+                </select>
+              </div>
+              <span class="field-error" id="preferred_learning_method-error"></span>
+            </div>
+
+          </div>
+
+          <!-- Action Buttons Bar -->
+          <div class="form-actions-bar">
+            <button type="button" id="clear-btn" class="btn btn-secondary-ghost">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+              Clear Form
+            </button>
+            
+            <button type="submit" id="submit-btn" class="btn btn-primary-gradient">
+              <span id="btn-text">Generate My Learning Path</span>
+              <span id="btn-spinner" class="spinner" style="display: none;"></span>
+              <svg id="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Raw Structured Profile Card (PRD Section 8 Normalized Data) -->
+      <section id="profile-result-section" class="profile-result-card" style="display: none;">
+        <div class="result-header">
+          <div>
+            <h3 class="result-title">Structured Profile Prepared (PRD Section 8)</h3>
+            <p class="result-desc">Validated and normalized user data ready for MCP &amp; AI Roadmap synthesis.</p>
+          </div>
+          <button type="button" id="view-roadmap-direct-btn" class="btn btn-sm btn-cyan-glow">
+            View Generated Roadmap →
+          </button>
+        </div>
+        <pre id="json-preview" class="json-preview"></pre>
+      </section>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- TAB 2: INTERACTIVE LEARNING ROADMAP (PHASES 4 & 5)      -->
+    <!-- ======================================================= -->
+    <section id="tab-roadmap" class="tab-content" style="display:none;">
+      
+      <!-- Roadmap Master Banner -->
+      <div class="roadmap-master-banner">
+        <div class="banner-left-info">
+          <div class="role-pill-glow" id="roadmap-role-badge">Data Analyst Track</div>
+          <h2 class="roadmap-main-heading" id="roadmap-heading">Personalized Learning Roadmap</h2>
+          <p class="roadmap-meta-subtext" id="roadmap-meta-info">Tailored for Alex Morgan • 8 Weeks • 2 hrs/day (112 Total Hours)</p>
+          
+          <!-- Skill Gaps Overview -->
+          <div class="skill-gaps-dashboard">
+            <div class="gap-category">
+              <span class="gap-label">Skills You Already Have:</span>
+              <div id="known-skills-container" class="skill-pills-row"></div>
+            </div>
+            <div class="gap-category">
+              <span class="gap-label text-cyan">Target Skills In This Roadmap:</span>
+              <div id="target-skills-container" class="skill-pills-row target-pills-row"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="banner-right-widget">
+          <!-- Dynamic Circular/Radial Progress Box -->
+          <div class="progress-radial-card">
+            <div class="radial-label">Overall Completion</div>
+            <div class="radial-progress-number" id="global-progress-percent">0%</div>
+            <div class="radial-tasks-text" id="global-progress-count">0 of 24 tasks completed</div>
+            <div class="radial-bar-rail">
+              <div class="radial-bar-fill" id="global-progress-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="roadmap-actions-row">
+            <button type="button" class="btn btn-outline-cyan" id="btn-print-roadmap">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print / Save PDF
+            </button>
+            <button type="button" class="btn btn-outline-purple" id="btn-download-json">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export JSON
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Study Routine Card -->
+      <div class="routine-card-glass">
+        <h3 class="routine-card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Recommended Daily Study Breakdown
+        </h3>
+        <div class="routine-grid" id="routine-grid"></div>
+      </div>
+
+      <!-- Weekly Modules Timeline -->
+      <div class="timeline-section">
+        <div class="timeline-header">
+          <div>
+            <h3 class="timeline-title">Week-by-Week Action Plan</h3>
+            <p class="timeline-subtitle">Click checkboxes as you complete topics to update your completion score in real-time.</p>
+          </div>
+        </div>
+        
+        <!-- Modules Accordion -->
+        <div id="weekly-modules-list" class="modules-accordion"></div>
+      </div>
+
+      <!-- Capstone Project Showcase Card -->
+      <div class="capstone-card-gold" id="capstone-container">
+        <div class="capstone-top-badge">🏆 Capstone Milestone</div>
+        <h3 class="capstone-title" id="capstone-title">Production Portfolio Project</h3>
+        <p class="capstone-desc" id="capstone-desc"></p>
+        <div class="capstone-impact" id="capstone-impact"></div>
+      </div>
+
+      <!-- Curated Resources & Documentation -->
+      <div class="resources-card-glass">
+        <h3 class="resources-card-title">📚 Curated Reference Documentation &amp; MCP Practice</h3>
+        <div class="resources-grid" id="resources-grid"></div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="roadmap-bottom-bar">
+        <button type="button" class="btn btn-secondary-ghost" id="btn-modify-goals">
+          ← Modify Learning Goals
+        </button>
+        <button type="button" class="btn btn-primary-gradient" id="btn-go-to-dashboard">
+          Open Progress Dashboard →
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- TAB 3: PROGRESS TRACKING DASHBOARD (PHASE 6)            -->
+    <!-- ======================================================= -->
+    <section id="tab-dashboard" class="tab-content" style="display:none;">
+      <div class="dashboard-hero-box">
+        <div class="section-tag-pill bg-purple">Phase 6 • Habit &amp; Progress Dashboard</div>
+        <h2 class="dashboard-hero-title">Your Learning Velocity &amp; Milestones</h2>
+        <p class="dashboard-hero-sub">Track completed tasks, study hours invested, and current curriculum stage.</p>
+      </div>
+
+      <!-- 4 Vibrant Colorful Stat Tiles -->
+      <div class="stats-tiles-row">
+        <div class="stat-tile tile-cyan">
+          <div class="stat-icon-bubble">✅</div>
+          <div class="stat-number" id="stat-completed-tasks">0</div>
+          <div class="stat-label">Tasks Completed</div>
+        </div>
+
+        <div class="stat-tile tile-purple">
+          <div class="stat-icon-bubble">⏳</div>
+          <div class="stat-number" id="stat-remaining-tasks">0</div>
+          <div class="stat-label">Tasks Remaining</div>
+        </div>
+
+        <div class="stat-tile tile-blue">
+          <div class="stat-icon-bubble">⏱️</div>
+          <div class="stat-number" id="stat-hours-invested">0 hrs</div>
+          <div class="stat-label">Hours Invested</div>
+        </div>
+
+        <div class="stat-tile tile-pink">
+          <div class="stat-icon-bubble">🎯</div>
+          <div class="stat-number" id="stat-current-week">Week 1</div>
+          <div class="stat-label">Current Stage</div>
+        </div>
+      </div>
+
+      <!-- Active Modules Checklist Table -->
+      <div class="dashboard-table-card">
+        <div class="table-card-header">
+          <div>
+            <h3>Active Curriculum Modules</h3>
+            <p>Overview of each stage's weekly focus and practical drill deliverables.</p>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-pink" id="btn-reset-progress">
+            Reset Progress
+          </button>
+        </div>
+        <div id="dashboard-tasks-table" class="dashboard-tasks-container"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MCP Diagnostics Modal (Phase 3 Inspector) -->
+  <div id="mcp-modal" class="modal-backdrop" style="display:none;">
+    <div class="modal-card-glass">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <span class="status-dot"></span>
+          <h3>MCP Mega Workshop — Tool &amp; Server Inspector</h3>
+        </div>
+        <button type="button" class="modal-close-btn" id="mcp-modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-info-text">
+          This system connects the learning path generation pipeline to the Model Context Protocol (MCP) tool schema for workshop evaluation.
+        </p>
+        <div class="mcp-diag-grid">
+          <div class="diag-item">
+            <span class="diag-key">MCP Protocol:</span>
+            <span class="diag-val">JSON-RPC 2.0 / MCP v1.0</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-key">Connection Status:</span>
+            <span class="diag-val success-text">Connected &amp; Verified</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-key">Tool 1:</span>
+            <span class="diag-val font-mono">profile_analyzer</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-key">Tool 2:</span>
+            <span class="diag-val font-mono">roadmap_synthesizer</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-key">Tool 3:</span>
+            <span class="diag-val font-mono">progress_tracker</span>
+          </div>
+          <div class="diag-item">
+            <span class="diag-key">Backend Server:</span>
+            <span class="diag-val">Flask (Port 5000)</span>
+          </div>
+        </div>
+        <h4 style="margin-top: 1.25rem; font-size: 0.9rem; color: #F8FAFC;">Live System Diagnostic Telemetry:</h4>
+        <pre id="mcp-live-json" class="json-preview" style="max-height: 180px;"></pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary-ghost" id="mcp-modal-close-btn">Close Inspector</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <strong>PathForge AI</strong> • MCP Mega Workshop Project 5
+      </div>
+      <p class="footer-copy">Built for real student success • Zero secret exposure • All phases 1-6 integrated</p>
+      <div class="footer-pills">
+        <span class="pill-chip">Python Flask</span>
+        <span class="pill-chip">MCP v1.0</span>
+        <span class="pill-chip">LocalStorage Engine</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Universal Script Loading -->
+  <script src="../static/js/app.js"></script>
+  <script src="./static/js/app.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
